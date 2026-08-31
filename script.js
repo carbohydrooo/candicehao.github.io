@@ -5,8 +5,14 @@ const photoWindow = document.querySelector(".photo-window");
 const profilePhoto = document.querySelector(".profile-photo");
 const photoCount = document.querySelector(".photo-count");
 const keywordsSection = document.querySelector(".keywords-section");
+const contactLetter = document.querySelector(".contact-letter");
+
+contactLetter?.addEventListener("animationend", () => {
+  contactLetter.classList.add("is-revealed");
+});
 
 function syncSectionRoute() {
+  const contactIsActive = window.location.hash === "#contact";
   const educationIsActive = window.location.hash.startsWith("#education");
   const experienceIsActive = window.location.hash.startsWith("#experience") || window.location.hash.startsWith("#ia-");
   const yourekaIsActive = window.location.hash === "#experience-youreka";
@@ -27,12 +33,17 @@ function syncSectionRoute() {
   document.body.classList.toggle("route-hobbies-art", hobbiesArtIsActive);
   document.body.classList.toggle("route-hobbies-sports", hobbiesSportsIsActive);
   document.body.classList.toggle("route-hobbies-travel", hobbiesTravelIsActive);
+  document.body.classList.toggle("route-contact", contactIsActive);
 
-  if (educationIsActive || experienceIsActive || hobbiesIsActive) {
+  if (contactIsActive) {
+    contactLetter?.classList.remove("is-revealed");
+  }
+
+  if (contactIsActive || educationIsActive || experienceIsActive || hobbiesIsActive) {
     document.body.classList.remove("intro-active");
     document.body.classList.add("intro-finished");
     window.requestAnimationFrame(() => {
-      if (window.location.hash === "#education" || window.location.hash === "#experience" || window.location.hash === "#hobbies" || window.location.hash === "#hobbies-art" || window.location.hash === "#hobbies-sports" || window.location.hash === "#hobbies-travel") {
+      if (window.location.hash === "#contact" || window.location.hash === "#education" || window.location.hash === "#experience" || window.location.hash === "#hobbies" || window.location.hash === "#hobbies-art" || window.location.hash === "#hobbies-sports" || window.location.hash === "#hobbies-travel") {
         window.scrollTo({ top: 0, behavior: "auto" });
       } else {
         document.querySelector(window.location.hash)?.scrollIntoView();
@@ -221,6 +232,9 @@ if (travelGlobeCanvas) {
   const closeBubble = photoBubble.querySelector(".travel-bubble-close");
   const placeButtons = document.querySelector(".travel-place-buttons");
   const globeContext = travelGlobeCanvas.getContext("2d");
+  bubbleImage.addEventListener("load", () => {
+    photoBubble.classList.toggle("is-portrait", bubbleImage.naturalHeight > bubbleImage.naturalWidth * 1.15);
+  });
   const travelPlaces = [
     ["Guangzhou", 23.13, 113.26, "guangzhou", 4],
     ["Beijing", 39.9, 116.4, "beijing", 11],
@@ -241,6 +255,7 @@ if (travelGlobeCanvas) {
     ["Maldives", 3.2, 73.2, "maldives", 5],
     ["Sri Lanka", 7.87, 80.77, "sri-lanka", 2],
     ["Thailand", 15.87, 100.99, "thailand", 2],
+    ["Peru", -9.19, -75.02, "peru", 8],
   ].map(([name, lat, lon, slug, count]) => ({ name, lat, lon, slug, count }));
   const continentShapes = [
     [[72,-165],[60,-135],[52,-128],[48,-123],[35,-118],[24,-105],[18,-92],[28,-82],[45,-67],[55,-58],[70,-90]],
